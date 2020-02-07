@@ -1,7 +1,12 @@
 package football.controllers;
 
+import football.service.RestClient;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +22,9 @@ public class FootballController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    RestClient restClient;
+
     @Value("${api.key}")
     private String apiKey;
 
@@ -24,9 +32,17 @@ public class FootballController {
     private String baseUrl;
 
     @GetMapping("/countries")
-    public List<Object> getCountries(@RequestParam String action) {
-        Object[] objects = restTemplate.getForObject(getCountryUrl(action), Object[].class);
-        return Arrays.asList(objects);
+    public ResponseEntity<JSONArray> getCountries(@RequestParam String action) {
+        String result = restClient.getResponse(getCountryUrl(action));
+        JSONParser parser = new JSONParser();
+        JSONArray obj = null;
+        try {
+            obj = (JSONArray)parser.parse(result);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(obj);
     }
 
     @GetMapping("/league")
