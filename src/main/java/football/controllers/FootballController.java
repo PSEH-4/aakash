@@ -65,7 +65,7 @@ public class FootballController {
     }
 
     private String getCountryUrl(String action) {
-        return baseUrl + action + "&country_id=" + "&APIkey=" + apiKey;
+        return baseUrl + action + "&APIkey=" + apiKey;
     }
 
     private String getTeamUrl(String action, Integer id) {
